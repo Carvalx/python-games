@@ -200,7 +200,7 @@ class Player:
 
 
 class Bullet:
-    R = 4
+    R = 5
 
     def __init__(self, x, y, speed):
         self.x = x
