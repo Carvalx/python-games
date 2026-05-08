@@ -8,16 +8,16 @@ import sys
 pygame.init()
 
 # ── Colores ─────────────────────────────────────────────────────────────────
-BG          = (14, 14, 26)
-PANEL_BG    = (22, 22, 40)
-BORDER      = (50, 50, 80)
-TITLE_COL   = (80, 220, 180)
-TEXT_COL    = (220, 220, 230)
-DIM_COL     = (100, 100, 140)
-HOVER_BG    = (35, 35, 65)
-SEL_BG      = (40, 80, 120)
-SEL_BORDER  = (80, 180, 240)
-BACK_COL    = (160, 100, 240)
+BG = (14, 14, 26)
+PANEL_BG = (22, 22, 40)
+BORDER = (50, 50, 80)
+TITLE_COL = (80, 220, 180)
+TEXT_COL = (220, 220, 230)
+DIM_COL = (100, 100, 140)
+HOVER_BG = (35, 35, 65)
+SEL_BG = (40, 80, 120)
+SEL_BORDER = (80, 180, 240)
+BACK_COL = (160, 100, 240)
 
 # ── Resolución base ──────────────────────────────────────────────────────────
 BASE_W, BASE_H = 780, 560
@@ -25,45 +25,45 @@ screen = pygame.display.set_mode((BASE_W, BASE_H))
 pygame.display.set_caption("Arcade Python")
 clock = pygame.time.Clock()
 
-font_title  = pygame.font.SysFont("consolas", 44, bold=True)
-font_sub    = pygame.font.SysFont("consolas", 18)
-font_item   = pygame.font.SysFont("consolas", 24, bold=True)
-font_desc   = pygame.font.SysFont("consolas", 14)
-font_hint   = pygame.font.SysFont("consolas", 13)
+font_title = pygame.font.SysFont("consolas", 44, bold=True)
+font_sub = pygame.font.SysFont("consolas", 18)
+font_item = pygame.font.SysFont("consolas", 24, bold=True)
+font_desc = pygame.font.SysFont("consolas", 14)
+font_hint = pygame.font.SysFont("consolas", 13)
 
 # ── Catálogo de juegos ───────────────────────────────────────────────────────
 GAMES = [
     {
-        "name":   "Serpiente",
-        "module": "games.snake",
-        "desc":   "Come manzanas, crece y llena el mapa. Clásico sin piedad.",
-        "icon":   "🐍",
-        "color":  (60, 200, 100),
+        "name": "Naves Espaciales",
+        "module": "games.space_shooter",  # ← ya no es None
+        "desc": "Defiende la galaxia de oleadas enemigas.",
+        "icon": "🚀",
+        "color": (100, 140, 220),
         "difficulties": ["Muy Fácil", "Fácil", "Medio", "Difícil", "Legendario"],
     },
     # Próximamente...
     {
-        "name":   "Naves Espaciales",
+        "name": "Naves Espaciales",
         "module": None,
-        "desc":   "Defiende la galaxia. ¡Próximamente!",
-        "icon":   "🚀",
-        "color":  (100, 140, 220),
+        "desc": "Defiende la galaxia. ¡Próximamente!",
+        "icon": "🚀",
+        "color": (100, 140, 220),
         "difficulties": [],
     },
 ]
 
 DIFF_COLORS = {
-    "Muy Fácil":  (100, 220, 100),
-    "Fácil":      (80,  200, 80),
-    "Medio":      (220, 200, 60),
-    "Difícil":    (220, 130, 50),
-    "Legendario": (210, 60,  60),
+    "Muy Fácil": (100, 220, 100),
+    "Fácil": (80, 200, 80),
+    "Medio": (220, 200, 60),
+    "Difícil": (220, 130, 50),
+    "Legendario": (210, 60, 60),
 }
 
 # ── Estado ───────────────────────────────────────────────────────────────────
-state     = "game_select"   # game_select | diff_select
-sel_game  = 0
-sel_diff  = 0
+state = "game_select"  # game_select | diff_select
+sel_game = 0
+sel_diff = 0
 hover_game = -1
 hover_diff = -1
 
@@ -118,8 +118,12 @@ def game_select_screen(mx, my):
         draw_rounded_rect(screen, bg, rect, 12, bcolor, 2)
 
         # Icon placeholder circle
-        pygame.draw.circle(screen, game["color"] if game["module"] else BORDER,
-                           (x + 50, start_y + 50), 28)
+        pygame.draw.circle(
+            screen,
+            game["color"] if game["module"] else BORDER,
+            (x + 50, start_y + 50),
+            28,
+        )
         ico = font_item.render(["S", "N"][i], True, BG if game["module"] else DIM_COL)
         screen.blit(ico, ico.get_rect(center=(x + 50, start_y + 50)))
 
@@ -135,7 +139,9 @@ def game_select_screen(mx, my):
             screen.blit(prox, prox.get_rect(centerx=x + card_w // 2, y=start_y + 80))
 
     # Hint
-    h = font_hint.render("↑↓ / Clic para elegir   ENTER para continuar   ESC para salir", True, DIM_COL)
+    h = font_hint.render(
+        "↑↓ / Clic para elegir   ENTER para continuar   ESC para salir", True, DIM_COL
+    )
     screen.blit(h, h.get_rect(centerx=BASE_W // 2, y=BASE_H - 28))
 
     pygame.display.flip()
@@ -207,6 +213,7 @@ def launch_game(game_idx, difficulty):
     if game["module"] is None:
         return
     import importlib
+
     mod = importlib.import_module(game["module"])
     # Restore base resolution before passing surface; game will resize itself
     surf = pygame.display.set_mode((BASE_W, BASE_H))
@@ -231,12 +238,14 @@ def main():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit(); sys.exit()
+                pygame.quit()
+                sys.exit()
 
             if event.type == pygame.KEYDOWN:
                 if state == "game_select":
                     if event.key == pygame.K_ESCAPE:
-                        pygame.quit(); sys.exit()
+                        pygame.quit()
+                        sys.exit()
                     elif event.key in (pygame.K_LEFT, pygame.K_a):
                         sel_game = (sel_game - 1) % len(GAMES)
                     elif event.key in (pygame.K_RIGHT, pygame.K_d):
