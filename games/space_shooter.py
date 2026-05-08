@@ -222,7 +222,7 @@ class Enemy:
     def __init__(self, x, y, speed, kind, wave):
         self.x = x
         self.y = y
-        self.speed = speed + wave * 0.15
+        self.speed = speed + wave * 0.1
         self.kind = kind % 4
         self.color = ENEMY_COLS[self.kind]
         self.r = 18
